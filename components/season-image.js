@@ -1,24 +1,24 @@
 import React from 'react'
 import Unsplash from 'unsplash-js';
+import process from 'process';
+import LoadingState from './loading-state';
 
-const { UNSPLASH_API_KEY, UNSPLASH_API_SECRET } = process.env;
-
-const unsplash = new Unsplash({
-  applicationId: UNSPLASH_API_KEY,
-  secret: UNSPLASH_API_SECRET,
-});
+let unsplash;
 
 export default class SeasonImage extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(props, this.state);
-
     this.state = {
       name: "",
-      image: "",
+      image: null,
       imageDescription: ""
     }
+
+    unsplash = new Unsplash({
+      applicationId: this.props.apiKey,
+      secret: this.props.secret,
+    });
   }
 
   async fetchImage(name) {
@@ -35,25 +35,36 @@ export default class SeasonImage extends React.Component {
   }
 
   async componentDidMount() {
-    await this.setState({ image: this.fetchImage(this.state.name) });
+    await this.setState({ image: null });
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (prevProps.name != this.props.name) {
-      this.setState({ image: this.fetchImage(this.props.name) })
+      let imageResponse = await this.fetchImage(this.props.name);
+      await this.setState({ image: imageResponse });
     }
   }
 
   render () {
     const { image, ownerUsername, ownerUrl, imageDescription } = this.state;
-
-    return (
-      <div className="relative">  
-        <img className="w-full" src={image} alt={imageDescription} />
-        <a href={ownerUrl} className="absolute no-underline  pin-r rounded-full pin-b px-3 flex items-center mr-4 mb-4  bg-grey-lighter py-2">
-          <span className="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker mr-2">@{ownerUsername} at Unsplash</span>
-        </a>
-      </div>
-    )
+    
+    if (!image) {
+      console.log("we dont have a image");
+      return (
+        <div className="relative loader-container">
+          <LoadingState />
+        </div>
+      )
+    } else {
+      console.log("we have a image");
+      return (
+        <div className="relative">
+          <img className="w-full" src={image} alt={imageDescription} />
+          <a href={ownerUrl} className="absolute no-underline  pin-r rounded-full pin-b px-3 flex items-center mr-4 mb-4  bg-grey-lighter py-2">
+            <span className="inline-block bg-grey-lighter rounded-full px-3 py-1 text-sm font-semibold text-grey-darker mr-2">@{ownerUsername} at Unsplash</span>
+          </a>
+        </div>
+      )
+    }
   }
 }

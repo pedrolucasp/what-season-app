@@ -1,0 +1,6 @@
+{
+  "env": {
+    "UNSPLASH_API_KEY": "@unsplash_api_key",
+    "UNSPLASH_API_SECRET": "@unsplash_api_secret"
+  }
+}

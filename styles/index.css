@@ -53,3 +53,43 @@
   font-size: 13px;
   color: #333;
 }
+
+.loader-container {
+  width: 480px;
+  height: 293px;
+}
+
+.season-card {
+  transition: all .15s ease;
+}
+
+.season-card:hover {
+  transform: translateY(-5px);
+}
+
+.loading-state {
+  width: 100%;
+  height: 100%;
+
+  border: 1px solid #d3d3d3;
+  background-color: lightgray;
+  opacity: 0.5;
+
+  animation-name: slide;
+  animation-delay: 1s;
+  animation-duration: 2.5s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}
+
+@keyframes slide {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
